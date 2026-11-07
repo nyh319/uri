@@ -19,9 +19,36 @@
   iframe { position: fixed; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
   .msg { font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", sans-serif; color: #1d1b1a;
          padding: 40px 24px; text-align: center; line-height: 1.6; }
+
+  /* 로딩 화면: 달력이 다 뜰 때까지 서명 로고를 띄운다 */
+  #splash { position: fixed; inset: 0; z-index: 2; background: #f6f4ef;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px;
+            transition: opacity .45s ease, visibility .45s; }
+  #splash.done { opacity: 0; visibility: hidden; }
+  #splash img { width: min(56vw, 240px); height: auto; opacity: 0;
+                animation: show .7s ease .1s forwards, breathe 2.4s ease-in-out .8s infinite; }
+  #splash .dots { display: flex; gap: 7px; opacity: 0; animation: show .5s ease .6s forwards; }
+  #splash .dots i { width: 6px; height: 6px; border-radius: 50%; background: #ff6b8b; opacity: .25;
+                    animation: dot 1.2s ease-in-out infinite; }
+  #splash .dots i:nth-child(2) { animation-delay: .2s; }
+  #splash .dots i:nth-child(3) { animation-delay: .4s; }
+  @keyframes show { to { opacity: 1; } }
+  @keyframes breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.035); } }
+  @keyframes dot { 0%, 100% { opacity: .25; transform: translateY(0); } 40% { opacity: 1; transform: translateY(-4px); } }
+  @media (prefers-reduced-motion: reduce) { #splash img, #splash .dots i { animation: show .3s forwards; } }
 </style>
 </head>
 <body>
+<div id="splash" role="status" aria-label="불러오는 중">
+  <img src="logo.png" alt="es ♥ yh">
+  <div class="dots"><i></i><i></i><i></i></div>
+</div>
+<script>
+  // 앱이 첫 달력을 다 그리면 'uri-ready'를 보내 온다. 혹시 신호가 안 와도 20초 뒤엔 걷는다.
+  function hideSplash() { document.getElementById('splash').classList.add('done'); }
+  window.addEventListener('message', function (e) { if (e.data === 'uri-ready') hideSplash(); });
+  setTimeout(hideSplash, 20000);
+</script>
 <script>
   // 앱스 스크립트 웹앱 주소. 접근 키(k)는 저장소에 넣지 않고 이 페이지 주소의 ?k= 로만 받는다.
   var APP_URL = 'https://script.google.com/macros/s/AKfycbwP8hLPqnPgkItHE2Gh1FOszHqmOGTLdfU6g493GFy2s41gh1qQ34mpgFi9WR27hPUx/exec';
