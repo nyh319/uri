@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>우리</title>
+<!-- 아이폰 홈 화면: 이름·아이콘·주소창 없는 전체 화면 -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="우리">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#f6f4ef">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+  html, body { margin: 0; height: 100%; background: #f6f4ef; }
+  /* 앱스 스크립트 웹앱을 화면 전체에 깐다. 이렇게 넣으면 구글 안내 배너가 안 뜬다. */
+  iframe { position: fixed; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
+  .msg { font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", sans-serif; color: #1d1b1a;
+         padding: 40px 24px; text-align: center; line-height: 1.6; }
+</style>
+</head>
+<body>
+<script>
+  // 앱스 스크립트 웹앱 주소. 접근 키(k)는 저장소에 넣지 않고 이 페이지 주소의 ?k= 로만 받는다.
+  var APP_URL = 'https://script.google.com/macros/s/AKfycbwP8hLPqnPgkItHE2Gh1FOszHqmOGTLdfU6g493GFy2s41gh1qQ34mpgFi9WR27hPUx/exec';
+
+  var key = new URLSearchParams(location.search).get('k') || '';
+  // 홈 화면 앱이 키 없이 열리는 경우를 대비해 이 기기에만 기억해 둔다
+  try {
+    if (key) localStorage.setItem('k', key); else key = localStorage.getItem('k') || '';
+  } catch (e) {}
+
+  if (key) {
+    var f = document.createElement('iframe');
+    f.src = APP_URL + '?k=' + encodeURIComponent(key);
+    f.title = '우리';
+    f.allow = 'clipboard-write';
+    document.body.appendChild(f);
+  } else {
+    document.body.innerHTML = '<p class="msg">주소가 올바르지 않습니다.<br>받은 주소 그대로 열어 주세요.</p>';
+  }
+</script>
+</body>
+</html>
