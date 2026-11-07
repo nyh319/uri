@@ -26,18 +26,19 @@
             transition: opacity .7s ease, visibility .7s; }
   #splash.done { opacity: 0; visibility: hidden; }
   /* 서명: es → ♥ → yh 순서로 하나씩 스윽. 세 장은 같은 크기 캔버스라 겹치면 원래 서명이 된다. */
-  #splash .sig { position: relative; width: min(60vw, 260px); aspect-ratio: 736 / 264;
+  /* 하트가 화면 정중앙(가로 50%)에 오도록 만든 캔버스. es·yh는 하트에서 같은 간격. */
+  #splash .sig { position: relative; width: min(69vw, 300px); aspect-ratio: 850 / 264;
                  animation: breathe 3.2s ease-in-out 4.4s infinite; }
   #splash .sig img { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; }
   /* 글씨는 왼쪽에서 오른쪽으로 천천히 써 내려가듯 드러난다. 앞 글자가 끝나 갈 무렵 다음이 이어서 시작. */
-  #splash .es { clip-path: inset(0 100% 0 0); filter: blur(4px);
+  #splash .es { clip-path: inset(0 86% 0 0); filter: blur(4px);
                 animation: write-es 1.8s cubic-bezier(.45,0,.25,1) .3s forwards; }
-  #splash .heart { transform-origin: 44% 58%; transform: scale(.6); filter: blur(4px);
+  #splash .heart { transform-origin: 50% 62.5%; transform: scale(.6); filter: blur(4px);
                    animation: pop 1.3s cubic-bezier(.3,1.2,.4,1) 1.5s forwards; }
-  #splash .yh { clip-path: inset(0 46% 0 54%); filter: blur(4px);
+  #splash .yh { clip-path: inset(0 36% 0 63%); filter: blur(4px);
                 animation: write-yh 2s cubic-bezier(.45,0,.25,1) 2.1s forwards; }
-  @keyframes write-es { to { clip-path: inset(0 0 0 0); filter: blur(0); opacity: 1; } }
-  @keyframes write-yh { to { clip-path: inset(0 0 0 54%); filter: blur(0); opacity: 1; } }
+  @keyframes write-es { to { clip-path: inset(0 61% 0 0); filter: blur(0); opacity: 1; } }
+  @keyframes write-yh { to { clip-path: inset(0 0 0 63%); filter: blur(0); opacity: 1; } }
   @keyframes pop { to { transform: scale(1); filter: blur(0); opacity: 1; } }
 
   #splash .dots { display: flex; gap: 7px; opacity: 0; animation: show .8s ease 3.8s forwards; }
