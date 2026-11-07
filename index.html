@@ -28,7 +28,10 @@
   #splash.done { opacity: 0; visibility: hidden; }
   /* 서명: es → ♥ → yh 순서로 하나씩 스윽. 세 장은 같은 크기 캔버스라 겹치면 원래 서명이 된다. */
   /* 하트가 화면 정중앙(가로 50%)에 오도록 만든 캔버스. es·yh는 하트에서 같은 간격. */
-  #splash .sig { position: relative; width: min(69vw, 300px); aspect-ratio: 850 / 264;
+  /* 하트(가로 50%, 세로 62.5% 지점)를 화면 정중앙 점에 정확히 맞춘다 */
+  #splash { --sw: min(69vw, 300px); --sh: calc(var(--sw) * 264 / 850); }
+  #splash .sig { position: absolute; left: 50%; top: 50%; width: var(--sw); height: var(--sh);
+                 margin-left: calc(var(--sw) / -2); margin-top: calc(var(--sh) * -0.625);
                  animation: breathe 3.2s ease-in-out 4.4s infinite; }
   #splash .sig img { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; }
   /* 글씨는 왼쪽에서 오른쪽으로 천천히 써 내려가듯 드러난다. 앞 글자가 끝나 갈 무렵 다음이 이어서 시작. */
@@ -42,7 +45,8 @@
   @keyframes write-yh { to { clip-path: inset(0 0 0 63%); filter: blur(0); opacity: 1; } }
   @keyframes pop { to { transform: scale(1); filter: blur(0); opacity: 1; } }
 
-  #splash .dots { display: flex; gap: 7px; opacity: 0; animation: show .8s ease 3.8s forwards; }
+  #splash .dots { position: absolute; left: 50%; top: calc(50% + var(--sh) * 0.375 + 26px); transform: translateX(-50%);
+                  display: flex; gap: 7px; opacity: 0; animation: show .8s ease 3.8s forwards; }
   #splash .dots i { width: 6px; height: 6px; border-radius: 50%; background: #ff6b8b; opacity: .25;
                     animation: dot 1.2s ease-in-out infinite; }
   #splash .dots i:nth-child(2) { animation-delay: .2s; }
