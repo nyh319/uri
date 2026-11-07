@@ -25,28 +25,51 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px;
             transition: opacity .45s ease, visibility .45s; }
   #splash.done { opacity: 0; visibility: hidden; }
-  #splash img { width: min(56vw, 240px); height: auto; opacity: 0;
-                animation: show .7s ease .1s forwards, breathe 2.4s ease-in-out .8s infinite; }
-  #splash .dots { display: flex; gap: 7px; opacity: 0; animation: show .5s ease .6s forwards; }
+  /* 서명: es → ♥ → yh 순서로 하나씩 스윽. 세 장은 같은 크기 캔버스라 겹치면 원래 서명이 된다. */
+  #splash .sig { position: relative; width: min(60vw, 260px); aspect-ratio: 736 / 264;
+                 animation: breathe 2.6s ease-in-out 3.2s infinite; }
+  #splash .sig img { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; }
+  /* 글씨는 왼쪽에서 오른쪽으로 써 내려가듯 드러난다 */
+  #splash .es { clip-path: inset(0 100% 0 0); filter: blur(3px);
+                animation: write-es 1.1s cubic-bezier(.45,.05,.25,1) .3s forwards; }
+  #splash .heart { transform-origin: 44% 58%; transform: scale(.3);
+                   animation: pop .7s cubic-bezier(.3,1.6,.5,1) 1.45s forwards; }
+  #splash .yh { clip-path: inset(0 46% 0 54%); filter: blur(3px);
+                animation: write-yh 1.2s cubic-bezier(.45,.05,.25,1) 2.05s forwards; }
+  @keyframes write-es { to { clip-path: inset(0 0 0 0); filter: blur(0); opacity: 1; } }
+  @keyframes write-yh { to { clip-path: inset(0 0 0 54%); filter: blur(0); opacity: 1; } }
+  @keyframes pop { 60% { transform: scale(1.18); opacity: 1; } to { transform: scale(1); opacity: 1; } }
+
+  #splash .dots { display: flex; gap: 7px; opacity: 0; animation: show .5s ease 2.9s forwards; }
   #splash .dots i { width: 6px; height: 6px; border-radius: 50%; background: #ff6b8b; opacity: .25;
                     animation: dot 1.2s ease-in-out infinite; }
   #splash .dots i:nth-child(2) { animation-delay: .2s; }
   #splash .dots i:nth-child(3) { animation-delay: .4s; }
   @keyframes show { to { opacity: 1; } }
-  @keyframes breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.035); } }
+  @keyframes breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
   @keyframes dot { 0%, 100% { opacity: .25; transform: translateY(0); } 40% { opacity: 1; transform: translateY(-4px); } }
-  @media (prefers-reduced-motion: reduce) { #splash img, #splash .dots i { animation: show .3s forwards; } }
+  @media (prefers-reduced-motion: reduce) {
+    #splash .sig, #splash .sig img, #splash .dots, #splash .dots i { animation: show .3s forwards; clip-path: none; filter: none; transform: none; }
+  }
 </style>
 </head>
 <body>
 <div id="splash" role="status" aria-label="불러오는 중">
-  <img src="logo.png" alt="es ♥ yh">
+  <div class="sig" aria-label="es ♥ yh">
+    <img class="es" src="logo-es.png" alt="">
+    <img class="heart" src="logo-heart.png" alt="">
+    <img class="yh" src="logo-yh.png" alt="">
+  </div>
   <div class="dots"><i></i><i></i><i></i></div>
 </div>
 <script>
-  // 앱이 첫 달력을 다 그리면 'uri-ready'를 보내 온다. 혹시 신호가 안 와도 20초 뒤엔 걷는다.
+  // 앱이 첫 달력을 다 그리면 'uri-ready'를 보내 온다.
+  // 서명이 다 써질 때(약 3.4초)까지는 기다렸다가 걷고, 신호가 안 와도 20초 뒤엔 걷는다.
+  var splashStart = Date.now(), MIN_SPLASH = 3400;
   function hideSplash() { document.getElementById('splash').classList.add('done'); }
-  window.addEventListener('message', function (e) { if (e.data === 'uri-ready') hideSplash(); });
+  window.addEventListener('message', function (e) {
+    if (e.data === 'uri-ready') setTimeout(hideSplash, Math.max(0, MIN_SPLASH - (Date.now() - splashStart)));
+  });
   setTimeout(hideSplash, 20000);
 </script>
 <script>
